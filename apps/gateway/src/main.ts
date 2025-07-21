@@ -8,11 +8,13 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   const port = configService.getOrThrow<number>('GATEWAY_PORT');
+  const env = configService.getOrThrow<string>('ENV');
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      disableErrorMessages: env === 'production',
     }),
   );
 
