@@ -2,10 +2,31 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { SharedConfigModule } from '@app/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { DataSource } from 'typeorm';
+import { User } from './entity/user.entity';
 
 @Module({
-  imports: [SharedConfigModule],
+  imports: [
+    SharedConfigModule,
+    TypeOrmModule.forRootAsync({
+      imports: [SharedConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.getOrThrow<string>('AUTH_DB_HOST'),
+        port: configService.getOrThrow<number>('AUTH_DB_PORT'),
+        username: configService.getOrThrow<string>('AUTH_DB_USERNAME'),
+        password: configService.getOrThrow<string>('AUTH_DB_PASSWORD'),
+        database: configService.getOrThrow<string>('AUTH_DB_NAME'),
+        entities: [User],
+      }),
+    }),
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor(private readonly dataSource: DataSource) {}
+}
