@@ -9,8 +9,11 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async login() {
-    const user = await this.userRepository.find();
+  async login(username: string, password: string) {
+    const user = await this.userRepository.find({
+      where: { username },
+    });
+
     return user;
   }
 
