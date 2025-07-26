@@ -1,32 +1,61 @@
 import { constant } from '@app/config';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { v4 } from 'uuid';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: bigint;
 
-  @Column()
+  @Column({ type: 'varchar', length: 15, unique: true })
   username: string;
 
-  @Column({ default: constant.USER.STATUS.ACTIVE })
+  @Column({ type: 'varchar', length: 1, default: constant.USER.STATUS.ACTIVE })
   status: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Column({ default: 0 })
+  @Column({ type: 'smallint', default: 0 })
   loginAttempt: number;
 
-  @Column()
+  @Column({ type: 'date', nullable: true })
+  lastLoginDate: Date;
+
+  @Column({ type: 'varchar', length: 15 })
   createdBy: string;
 
-  @Column()
+  @Column({ type: 'datetime' })
   createdAt: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   updatedBy: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   updatedAt: Date;
+
+  @Column({ type: 'varchar', length: 50 })
+  version: string;
+
+  @BeforeInsert()
+  setCreatedAt() {
+    this.createdAt = new Date();
+  }
+
+  @BeforeUpdate()
+  setUpdatedAt() {
+    this.updatedAt = new Date();
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateVersion() {
+    this.version = v4().toString();
+  }
 }
