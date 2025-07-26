@@ -1,12 +1,5 @@
-import { constant } from '@app/config';
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { v4 } from 'uuid';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 @Entity()
 export class User {
@@ -16,7 +9,7 @@ export class User {
   @Column({ type: 'varchar', length: 15, unique: true })
   username: string;
 
-  @Column({ type: 'varchar', length: 1, default: constant.USER.STATUS.ACTIVE })
+  @Column({ type: 'varchar', length: 1 })
   status: string;
 
   @Column({ type: 'varchar', length: 255 })
@@ -55,7 +48,7 @@ export class User {
 
   @BeforeInsert()
   @BeforeUpdate()
-  updateVersion() {
-    this.version = v4().toString();
+  generateVersion() {
+    this.version = uuid();
   }
 }
