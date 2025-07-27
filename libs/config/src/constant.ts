@@ -1,4 +1,7 @@
 export const constant = {
+  API: {
+    MAX_LOGIN_ATTEMPT: 5,
+  },
   USER: {
     TYPE: {
       ADMINISTRATOR: 'A',

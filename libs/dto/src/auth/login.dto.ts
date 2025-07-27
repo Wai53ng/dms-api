@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
 export class LoginRequestDto {
   @IsString()
@@ -9,7 +9,12 @@ export class LoginRequestDto {
 }
 
 export class LoginResponseDto {
+  @IsBoolean()
   success: boolean;
+
+  @IsString()
   message: string;
+
+  @IsString()
   token: string;
 }

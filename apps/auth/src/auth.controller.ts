@@ -1,15 +1,17 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MessagePattern } from '@nestjs/microservices';
-import { LoginRequest } from './request/login-request';
+import { LoginRequestDto } from '@app/dto';
 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern('AUTH.LOGIN')
-  async login(data: LoginRequest) {
-    return await this.authService.login(data.username, data.password);
+  async login(data: LoginRequestDto) {
+    const response = await this.authService.login(data.username, data.password);
+    console.log(response)
+    return response;
   }
 
   @MessagePattern('AUTH.LOGOUT')
