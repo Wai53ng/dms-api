@@ -9,9 +9,7 @@ export class AuthController {
 
   @MessagePattern('AUTH.LOGIN')
   async login(data: LoginRequestDto) {
-    const response = await this.authService.login(data.username, data.password);
-    console.log(response)
-    return response;
+    return await this.authService.login(data.username, data.password);
   }
 
   @MessagePattern('AUTH.LOGOUT')
