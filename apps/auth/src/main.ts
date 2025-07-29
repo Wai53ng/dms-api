@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
-import { ConsoleLogger } from '@nestjs/common';
+import { LoggerService } from '@app/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
@@ -17,7 +17,7 @@ async function bootstrap() {
     },
   });
 
-  app.useLogger(new ConsoleLogger());
+  app.get(LoggerService);
 
   await app.startAllMicroservices();
 }

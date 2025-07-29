@@ -30,6 +30,12 @@
       "@app/dto/*": [
         "libs/dto/src/*"
       ],
+      "@app/logger": [
+        "libs/logger/src"
+      ],
+      "@app/logger/*": [
+        "libs/logger/src/*"
+      ],
       "@app/security": [
         "libs/security/src"
       ],

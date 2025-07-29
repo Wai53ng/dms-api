@@ -7,11 +7,13 @@ import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { User } from './entity/user.entity';
 import { SecurityModule } from '@app/security';
+import { LoggerModule } from '@app/logger';
 
 @Module({
   imports: [
     SharedConfigModule,
     SecurityModule,
+    LoggerModule,
     TypeOrmModule.forRootAsync({
       imports: [SharedConfigModule],
       inject: [ConfigService],

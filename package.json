@@ -88,6 +88,7 @@
     "moduleNameMapper": {
       "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
       "^@app/dto(|/.*)$": "<rootDir>/libs/dto/src/$1",
+      "^@app/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
       "^@app/security(|/.*)$": "<rootDir>/libs/security/src/$1"
     }
   }
