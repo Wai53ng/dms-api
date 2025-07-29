@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
@@ -14,6 +14,8 @@ export class AuthService {
     private securityService: SecurityService,
   ) {}
 
+  private readonly logger = new Logger(AuthService.name, { timestamp: true });
+
   async login(username: string, password: string) {
     const response = new LoginResponseDto();
     response.success = false;
@@ -25,12 +27,14 @@ export class AuthService {
 
         if (!user) {
           response.message = responseMessage.WRONG_LOGIN_CREDENTIAL;
+          this.logger.log(`INFO: login - user ${username} is not found.`);
           return;
         }
 
         const { message, success } = this.verifyAuthUser(user, password);
         if (!success) {
           await this.updateLoginAttempt(manager, user);
+          this.logger.log(`INFO: login - failed login attempt for user ${username}.`);
           response.message = message;
           return;
         }
@@ -42,7 +46,7 @@ export class AuthService {
         response.token = token;
       });
     } catch (err: unknown) {
-      console.error(err);
+      this.logger.error('ERROR: login - ', err);
     }
 
     return response;
