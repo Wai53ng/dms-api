@@ -1,5 +1,9 @@
-export class LoginDto {
-  username: string;
+import { IsString } from 'class-validator';
 
-  password: string;
+export class LoginDto {
+  @IsString()
+  readonly username: string;
+
+  @IsString()
+  readonly password: string;
 }
