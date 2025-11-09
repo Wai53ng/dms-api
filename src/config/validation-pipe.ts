@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 
-export function getValidationPipe(env: string) {
+export function getValidationPipe(env: string): ValidationPipe {
   return new ValidationPipe({
     whitelist: true,
     transform: true,
