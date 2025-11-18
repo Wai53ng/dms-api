@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -12,4 +6,181 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model address {
+  id        BigInt    @id @default(autoincrement())
+  branchId  BigInt?
+  line1     String    @db.VarChar(100)
+  line2     String?   @db.VarChar(100)
+  line3     String?   @db.VarChar(100)
+  postcode  String    @db.VarChar(10)
+  cityId    BigInt
+  stateId   BigInt
+  countryId BigInt
+  createdBy String    @db.VarChar(15)
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  updatedBy String?   @db.VarChar(15)
+  updatedAt DateTime? @db.DateTime(0)
+  version   String    @db.VarChar(50)
+  branch    branch?   @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_address_branchId")
+  city      city      @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_address_cityId")
+  country   country   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_address_countryId")
+
+  @@index([cityId], map: "fk_address_cityId")
+  @@index([countryId], map: "fk_address_countryId")
+  @@index([branchId], map: "fk_address_stateId")
+}
+
+model branch {
+  id           BigInt         @id @default(autoincrement())
+  code         String         @db.VarChar(6)
+  name         String         @db.VarChar(20)
+  companyId    BigInt
+  headquarter  Boolean?       @default(false)
+  status       String?        @default("A") @db.VarChar(1)
+  createdBy    String         @db.VarChar(15)
+  createdAt    DateTime?      @default(now()) @db.DateTime(0)
+  updatedBy    String?        @db.VarChar(15)
+  updatedAt    DateTime?      @db.DateTime(0)
+  version      String         @db.VarChar(50)
+  address      address[]
+  company      company        @relation(fields: [companyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_branch_companyId")
+  user_profile user_profile[]
+
+  @@index([companyId], map: "fk_branch_companyId")
+}
+
+model city {
+  id        BigInt    @id @default(autoincrement())
+  code      String    @db.VarChar(6)
+  name      String    @db.VarChar(60)
+  postcode  String    @db.VarChar(10)
+  stateId   BigInt
+  createdBy String    @db.VarChar(15)
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  updatedBy String?   @db.VarChar(15)
+  updatedAt DateTime? @db.DateTime(0)
+  version   String    @db.VarChar(50)
+  address   address[]
+}
+
+model company {
+  id             BigInt    @id @default(autoincrement())
+  code           String    @unique(map: "code") @db.VarChar(6)
+  name           String    @db.VarChar(20)
+  fullName       String    @db.VarChar(100)
+  registrationNo String    @db.VarChar(20)
+  foundedDate    DateTime  @db.Date
+  website        String    @db.VarChar(100)
+  email          String    @db.VarChar(255)
+  contactNumber  String    @db.VarChar(15)
+  fax            String    @db.VarChar(15)
+  countryId      BigInt
+  createdBy      String    @db.VarChar(15)
+  createdAt      DateTime? @default(now()) @db.DateTime(0)
+  updatedBy      String?   @db.VarChar(15)
+  updatedAt      DateTime? @db.DateTime(0)
+  version        String    @db.VarChar(50)
+  branch         branch[]
+  country        country   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_company_countryId")
+
+  @@index([countryId], map: "fk_company_countryId")
+}
+
+model country {
+  id        BigInt    @id @default(autoincrement())
+  code      String    @unique(map: "code") @db.VarChar(6)
+  name      String    @db.VarChar(60)
+  createdBy String    @db.VarChar(15)
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  updatedBy String?   @db.VarChar(15)
+  updatedAt DateTime? @db.DateTime(0)
+  version   String    @db.VarChar(50)
+  address   address[]
+  company   company[]
+}
+
+model department {
+  id           BigInt         @id @default(autoincrement())
+  code         String         @unique(map: "code") @db.VarChar(6)
+  name         String         @db.VarChar(30)
+  remarks      String?        @db.VarChar(500)
+  status       String?        @default("A") @db.VarChar(1)
+  createdBy    String         @db.VarChar(15)
+  createdAt    DateTime?      @default(now()) @db.DateTime(0)
+  updatedBy    String?        @db.VarChar(15)
+  updatedAt    DateTime?      @db.DateTime(0)
+  version      String         @db.VarChar(50)
+  user_profile user_profile[]
+}
+
+model role {
+  id           BigInt         @id @default(autoincrement())
+  code         String         @unique(map: "code") @db.VarChar(6)
+  name         String         @db.VarChar(30)
+  remarks      String?        @db.VarChar(500)
+  createdBy    String         @db.VarChar(15)
+  createdAt    DateTime?      @default(now()) @db.DateTime(0)
+  updatedBy    String?        @db.VarChar(15)
+  updatedAt    DateTime?      @db.DateTime(0)
+  version      String         @db.VarChar(50)
+  user_profile user_profile[]
+}
+
+model state {
+  id        BigInt    @id @default(autoincrement())
+  code      String    @db.VarChar(6)
+  name      String    @db.VarChar(60)
+  countryId BigInt
+  createdBy String    @db.VarChar(15)
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  updatedBy String?   @db.VarChar(15)
+  updatedAt DateTime? @db.DateTime(0)
+  version   String    @db.VarChar(50)
+}
+
+model user {
+  id            BigInt         @id @default(autoincrement())
+  username      String         @unique(map: "username") @db.VarChar(15)
+  password      String         @db.VarChar(255)
+  status        String?        @default("A") @db.VarChar(1)
+  loginAttempt  Int?           @default(0) @db.SmallInt
+  lastLoginDate DateTime?      @db.DateTime(0)
+  createdBy     String         @db.VarChar(15)
+  createdAt     DateTime?      @default(now()) @db.DateTime(0)
+  updatedBy     String?        @db.VarChar(15)
+  updatedAt     DateTime?      @db.DateTime(0)
+  version       String         @db.VarChar(50)
+  user_profile  user_profile[]
+}
+
+model user_profile {
+  id            BigInt     @id @default(autoincrement())
+  userId        BigInt
+  branchId      BigInt
+  departmentId  BigInt
+  roleId        BigInt
+  firstName     String     @db.VarChar(50)
+  lastName      String     @db.VarChar(50)
+  fullName      String?    @db.VarChar(101)
+  type          String     @db.VarChar(1)
+  gender        String     @db.VarChar(1)
+  email         String     @unique(map: "email") @db.VarChar(255)
+  contactNumber String?    @db.VarChar(15)
+  dateOfBirth   DateTime?  @db.Date
+  createdBy     String     @db.VarChar(15)
+  createdAt     DateTime?  @default(now()) @db.DateTime(0)
+  updatedBy     String?    @db.VarChar(15)
+  updatedAt     DateTime?  @db.DateTime(0)
+  version       String     @db.VarChar(50)
+  branch        branch     @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_profile_branchId")
+  department    department @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_profile_departmentId")
+  role          role       @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_profile_roleId")
+  user          user       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_profile_userId")
+
+  @@index([branchId], map: "fk_user_profile_branchId")
+  @@index([departmentId], map: "fk_user_profile_departmentId")
+  @@index([roleId], map: "fk_user_profile_roleId")
+  @@index([userId], map: "fk_user_profile_userId")
 }
