@@ -14,7 +14,7 @@ export class User extends BaseModel {
   username: string;
 
   @Column({
-    type: DataType.STRING(255),
+    type: DataType.STRING(100),
     allowNull: false,
   })
   password: string;

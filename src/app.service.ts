@@ -8,7 +8,7 @@ export class AppService implements OnModuleInit {
   async onModuleInit() {
     try {
       await this.sequelize.authenticate();
-      console.log('Database connected.')
+      console.log('Database connected.');
     } catch (error) {
       console.error(error);
     }
