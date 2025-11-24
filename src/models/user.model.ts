@@ -11,29 +11,29 @@ export class User extends BaseModel {
     unique: true,
     allowNull: false,
   })
-  username: string;
+  declare username: string;
 
   @Column({
     type: DataType.STRING(100),
     allowNull: false,
   })
-  password: string;
+  declare password: string;
 
   @Column({
     type: DataType.STRING(1),
     defaultValue: constant.USER.STATUS.ACTIVE,
   })
-  status: string;
+  declare status: string;
 
   @Column({
     type: DataType.SMALLINT,
     defaultValue: 0,
   })
-  loginAttempt?: number;
+  declare loginAttempt: number;
 
   @Column({
     type: DataType.DATE,
     allowNull: true,
   })
-  lastLoginDate?: Date;
+  declare lastLoginDate: Date;
 }

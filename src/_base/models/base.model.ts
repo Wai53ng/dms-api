@@ -14,7 +14,7 @@ export class BaseModel extends Model {
     type: DataType.STRING(15),
     allowNull: false,
   })
-  createdBy: string;
+  declare createdBy: string;
 
   @CreatedAt
   @Column({
@@ -26,7 +26,7 @@ export class BaseModel extends Model {
     type: DataType.STRING(15),
     allowNull: true,
   })
-  updatedBy: string;
+  declare updatedBy: string;
 
   @UpdatedAt
   @Column({
